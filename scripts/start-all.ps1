@@ -211,6 +211,12 @@ if ($Build) {
 $env:MYSQL_HOST = 'localhost'
 $env:MYSQL_PORT = '3306'
 $env:MYSQL_USER = 'root'
+
+$localEnvFile = Join-Path $root '.env.local'
+if (Test-Path $localEnvFile) {
+    . $localEnvFile
+}
+
 if (!$env:MYSQL_PASSWORD) { $env:MYSQL_PASSWORD = '123456' }
 $env:REDIS_HOST = 'localhost'
 $env:RABBITMQ_HOST = 'localhost'
