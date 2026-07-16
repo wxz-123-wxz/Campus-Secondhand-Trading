@@ -1,0 +1,38 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: campus-trade-payment
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/campus_payment?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:123456}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQLDialect
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_HOST:localhost}:${NACOS_PORT:8848}
+        ip: 127.0.0.1
+
+# 支付宝沙箱配置。私钥属于敏感信息，请通过环境变量注入，不要提交到 Git。
+alipay:
+  app-id: ${ALIPAY_APP_ID:}
+  gateway-url: ${ALIPAY_GATEWAY_URL:https://openapi-sandbox.dl.alipaydev.com/gateway.do}
+  private-key: ${ALIPAY_PRIVATE_KEY:}
+  alipay-public-key: ${ALIPAY_PUBLIC_KEY:}
+  # 同步回调：支付完成后用户浏览器跳转的地址（指向网关）
+  return-url: ${ALIPAY_RETURN_URL:http://localhost:8080/api/payment/return}
+  # 异步通知：支付宝服务器主动推送的地址（本地调试需要用 ngrok 等内网穿透）
+  notify-url: ${ALIPAY_NOTIFY_URL:http://localhost:8084/api/payment/notify}

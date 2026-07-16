@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>注册 — 校园二手交易</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+<style>
+  body{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    padding:2rem 0;
+    background:
+      linear-gradient(120deg,rgba(2,10,25,.54),rgba(8,51,72,.22)),
+      url("assets/hero-campus-secondhand-market-v3.jpg") center/cover fixed no-repeat;
+  }
+  .card{border:1px solid rgba(255,255,255,.38);border-radius:18px;box-shadow:0 22px 70px rgba(0,0,0,.32);background:rgba(255,255,255,.3);backdrop-filter:blur(20px);color:#fff;}
+  .brand{font-size:1.5rem;font-weight:700;color:#fff;text-shadow:0 3px 12px rgba(0,0,0,.24);}
+  .text-muted,.form-label{color:rgba(255,255,255,.82)!important;}
+  .form-control{background:rgba(255,255,255,.72);border-color:rgba(255,255,255,.28);}
+  .form-control:focus{background:rgba(255,255,255,.9);box-shadow:0 0 0 .2rem rgba(14,165,233,.18);}
+  hr{border-color:rgba(255,255,255,.34);opacity:1;}
+  a{color:#e0f2fe;}
+  .btn-primary{background:linear-gradient(90deg,#0ea5e9,#2563eb);border:none;}
+  .btn-primary:hover{opacity:.9;}
+</style>
+<link rel="stylesheet" href="assets/app.css"/>
+</head>
+<body class="auth-page">
+<div class="container" style="max-width:480px;">
+  <div class="card p-4 p-md-5">
+    <div class="text-center mb-4">
+      <div class="brand"><i class="bi bi-shop-window"></i> 校园二手</div>
+      <p class="text-muted mt-1 mb-0">创建新账号</p>
+    </div>
+    <form id="regForm">
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label">用户名 <span class="text-danger">*</span></label>
+          <input id="username" type="text" class="form-control" placeholder="3~30位字母/数字/下划线" required/>
+        </div>
+        <div class="col-12">
+          <label class="form-label">密码 <span class="text-danger">*</span></label>
+          <input id="password" type="password" class="form-control" placeholder="6~30位" required/>
+        </div>
+        <div class="col-12">
+          <label class="form-label">昵称</label>
+          <input id="nickname" type="text" class="form-control" placeholder="选填，默认同用户名"/>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">邮箱</label>
+          <input id="email" type="email" class="form-control" placeholder="选填"/>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">手机号</label>
+          <input id="phone" type="tel" class="form-control" placeholder="选填"/>
+        </div>
+        <div class="col-12">
+          <label class="form-label">校区</label>
+          <input id="campus" type="text" class="form-control" placeholder="如：北校区、南校区"/>
+        </div>
+      </div>
+      <div id="errMsg" class="alert alert-danger d-none mt-3"></div>
+      <button type="submit" id="submitBtn" class="btn btn-primary w-100 py-2 mt-4">
+        <span id="spinner" class="spinner-border spinner-border-sm d-none me-2"></span>注册
+      </button>
+    </form>
+    <hr class="my-4"/>
+    <p class="text-center mb-0 text-muted">
+      已有账号？<a href="login.html" class="text-decoration-none fw-semibold">返回登录</a>
+    </p>
+  </div>
+</div>
+<script src="js/api.js?v=20260708-admin1"></script>
+<script>
+  document.getElementById('regForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn    = document.getElementById('submitBtn');
+    const spinner = document.getElementById('spinner');
+    const errMsg  = document.getElementById('errMsg');
+    btn.disabled = true;
+    spinner.classList.remove('d-none');
+    errMsg.classList.add('d-none');
+    try {
+      await userApi.register({
+        username: document.getElementById('username').value.trim(),
+        password: document.getElementById('password').value,
+        nickname: document.getElementById('nickname').value.trim() || undefined,
+        email:    document.getElementById('email').value.trim()    || undefined,
+        phone:    document.getElementById('phone').value.trim()    || undefined,
+        campus:   document.getElementById('campus').value.trim()   || undefined,
+      });
+      showToast('注册成功，请登录');
+      setTimeout(() => location.href = 'login.html', 1200);
+    } catch(err) {
+      errMsg.textContent = err.message;
+      errMsg.classList.remove('d-none');
+      btn.disabled = false;
+      spinner.classList.add('d-none');
+    }
+  });
+</script>
+</body>
+</html>

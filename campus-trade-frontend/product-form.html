@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>发布商品 — 校园二手交易</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+<style>
+  .card{border:none;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.08);}
+</style>
+<link rel="stylesheet" href="assets/app.css"/>
+</head>
+<body class="bg-light app-page">
+<nav class="navbar navbar-light bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="index.html"><i class="bi bi-shop-window text-primary"></i> 校园二手</a>
+    <a href="my-products.html" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-box-seam"></i> 我的商品
+    </a>
+  </div>
+</nav>
+
+<div class="container py-4" style="max-width:640px;">
+  <h3 class="mb-4"><i class="bi bi-plus-circle text-primary"></i> 发布商品</h3>
+  <div class="card p-4">
+    <form id="publishForm" novalidate>
+      <div class="mb-3">
+        <label class="form-label">商品标题 <span class="text-danger">*</span></label>
+        <input id="title" type="text" class="form-control" maxlength="80" required placeholder="简洁明了，如：九成新高等数学教材"/>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="form-label">价格（元）<span class="text-danger">*</span></label>
+          <div class="input-group">
+            <span class="input-group-text">¥</span>
+            <input id="price" type="number" class="form-control" min="0.01" step="0.01" required placeholder="0.00"/>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">分类</label>
+          <select id="category" class="form-select">
+            <option value="">请选择</option>
+            <option>教材书籍</option>
+            <option>电子数码</option>
+            <option>生活用品</option>
+            <option>运动器材</option>
+            <option>服装配饰</option>
+            <option>其他</option>
+          </select>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">交易地点</label>
+        <input id="tradePlace" type="text" class="form-control" maxlength="100" placeholder="如：图书馆门口、食堂二楼"/>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">商品描述</label>
+        <textarea id="description" class="form-control" rows="4" maxlength="1000"
+          placeholder="描述商品成色、原价、出售原因等..."></textarea>
+      </div>
+      <div class="mb-4">
+        <label class="form-label">商品图片链接</label>
+        <input id="imageUrl" type="text" class="form-control" inputmode="text" autocomplete="off"
+               placeholder="填写图片路径，如 assets/products/real/bike.jpg（选填）"/>
+        <div class="form-text">推荐填写 assets/products/real/bike.jpg 这种项目内路径，也支持 http/https 图片地址，不要填写 D:\ 开头的电脑绝对路径。</div>
+      </div>
+      <div id="errMsg" class="alert alert-danger d-none"></div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary flex-grow-1">
+          <span id="spinner" class="spinner-border spinner-border-sm d-none me-1"></span>
+          <i class="bi bi-send"></i> 立即发布
+        </button>
+        <a href="index.html" class="btn btn-outline-secondary">取消</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/api.js?v=20260708-admin1"></script>
+<script>
+  if (!requireLogin()) {}   // requireLogin 会自动跳转
+
+  document.getElementById('publishForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn     = e.target.querySelector('[type=submit]');
+    const spinner = document.getElementById('spinner');
+    const errMsg  = document.getElementById('errMsg');
+    btn.disabled = true;
+    spinner.classList.remove('d-none');
+    errMsg.classList.add('d-none');
+    try {
+      const p = await productApi.create({
+        title:       document.getElementById('title').value.trim(),
+        price:       parseFloat(document.getElementById('price').value),
+        category:    document.getElementById('category').value || undefined,
+        tradePlace:  document.getElementById('tradePlace').value.trim() || undefined,
+        description: document.getElementById('description').value.trim() || undefined,
+        imageUrl:    normalizeImagePath(document.getElementById('imageUrl').value),
+      });
+      showToast('发布成功！');
+      setTimeout(() => location.href = 'product-detail.html?id=' + p.id, 1200);
+    } catch(err) {
+      errMsg.textContent = err.message;
+      errMsg.classList.remove('d-none');
+      btn.disabled = false;
+      spinner.classList.add('d-none');
+    }
+  });
+</script>
+</body>
+</html>

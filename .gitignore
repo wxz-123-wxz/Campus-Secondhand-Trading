@@ -1,0 +1,39 @@
+# Build outputs
+target/
+*.class
+*.jar
+*.war
+
+# Runtime logs
+logs/
+*.log
+
+# IDE and local metadata
+.idea/
+.vscode/
+.codex/
+.agents/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local environment and secrets
+.env
+.env.*
+application-local.yml
+application-local.yaml
+application-local.properties
+
+# Course report / generated personal documents
+report/
+
+# LaTeX generated files
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.xdv
+*.xref

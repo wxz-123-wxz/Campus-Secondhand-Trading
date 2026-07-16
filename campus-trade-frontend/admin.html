@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>后台管理 - 校园二手交易</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+<link rel="stylesheet" href="assets/app.css"/>
+<style>
+  body{background:#f5f9fc;}
+  .admin-hero{
+    padding:34px 0 22px;
+    background:linear-gradient(135deg,#e8f7f4 0%,#edf7ff 56%,#f9fbff 100%);
+    border-bottom:1px solid rgba(148,163,184,.22);
+  }
+  .admin-stat{
+    min-height:96px;
+    border:1px solid rgba(148,163,184,.22);
+    border-radius:14px;
+    background:rgba(255,255,255,.82);
+    box-shadow:0 10px 26px rgba(15,23,42,.08);
+    padding:18px;
+  }
+  .admin-stat .num{font-size:28px;font-weight:800;color:#0f5f87;}
+  .admin-panel{border:none;border-radius:16px;box-shadow:0 10px 26px rgba(15,23,42,.08);}
+  .table td,.table th{vertical-align:middle;}
+  .message-content{max-width:420px;white-space:pre-wrap;}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="index.html"><i class="bi bi-shop-window text-primary"></i> 校园二手</a>
+    <div class="d-flex gap-2">
+      <a href="index.html" class="btn btn-outline-secondary btn-sm"><i class="bi bi-house"></i> 返回首页</a>
+      <button class="btn btn-outline-danger btn-sm" id="btnLogout"><i class="bi bi-box-arrow-right"></i> 退出</button>
+    </div>
+  </div>
+</nav>
+
+<section class="admin-hero">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+      <div>
+        <span class="badge text-bg-primary mb-2">管理员控制台</span>
+        <h2 class="mb-1">平台运营管理</h2>
+        <p class="text-muted mb-0">集中查看用户、商品、订单和留言，及时处理违规内容。</p>
+      </div>
+      <button class="btn btn-primary" id="btnRefresh"><i class="bi bi-arrow-clockwise"></i> 刷新数据</button>
+    </div>
+    <div class="row g-3">
+      <div class="col-md-3"><div class="admin-stat"><div class="text-muted">用户总数</div><div class="num" id="statUsers">-</div></div></div>
+      <div class="col-md-3"><div class="admin-stat"><div class="text-muted">商品总数</div><div class="num" id="statProducts">-</div></div></div>
+      <div class="col-md-3"><div class="admin-stat"><div class="text-muted">订单总数</div><div class="num" id="statOrders">-</div></div></div>
+      <div class="col-md-3"><div class="admin-stat"><div class="text-muted">留言总数</div><div class="num" id="statMessages">-</div></div></div>
+    </div>
+  </div>
+</section>
+
+<main class="container py-4">
+  <ul class="nav nav-pills gap-2 mb-3" id="adminTabs">
+    <li class="nav-item"><button class="nav-link active" data-tab="users"><i class="bi bi-people"></i> 用户管理</button></li>
+    <li class="nav-item"><button class="nav-link" data-tab="products"><i class="bi bi-bag"></i> 商品管理</button></li>
+    <li class="nav-item"><button class="nav-link" data-tab="orders"><i class="bi bi-receipt"></i> 订单管理</button></li>
+    <li class="nav-item"><button class="nav-link" data-tab="messages"><i class="bi bi-chat-dots"></i> 留言管理</button></li>
+  </ul>
+  <div class="admin-panel bg-white p-3" id="adminContent">
+    <div class="text-center py-5"><div class="spinner-border text-primary"></div><p class="text-muted mt-2">加载中...</p></div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/api.js?v=20260708-admin1"></script>
+<script>
+  if (!requireLogin()) {}
+  if (!auth.isAdmin()) {
+    showToast('只有管理员 admin 可以进入后台', 'error');
+    setTimeout(() => location.href = 'index.html', 1200);
+  }
+
+  document.getElementById('btnLogout').addEventListener('click', () => userApi.logout());
+  document.getElementById('btnRefresh').addEventListener('click', () => loadAll(currentTab));
+
+  let currentTab = 'users';
+  let state = { users: [], products: [], orders: [], messages: [] };
+
+  document.querySelectorAll('#adminTabs button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#adminTabs button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTab = btn.dataset.tab;
+      renderCurrent();
+    });
+  });
+
+  async function loadAll(tabAfterLoad = 'users') {
+    const content = document.getElementById('adminContent');
+    content.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div><p class="text-muted mt-2">加载中...</p></div>';
+    try {
+      const [users, products, orders, messages] = await Promise.all([
+        adminApi.users(),
+        adminApi.products(),
+        adminApi.orders(),
+        adminApi.messages()
+      ]);
+      state = { users: users || [], products: products || [], orders: orders || [], messages: messages || [] };
+      document.getElementById('statUsers').textContent = state.users.length;
+      document.getElementById('statProducts').textContent = state.products.length;
+      document.getElementById('statOrders').textContent = state.orders.length;
+      document.getElementById('statMessages').textContent = state.messages.length;
+      currentTab = tabAfterLoad;
+      renderCurrent();
+    } catch (err) {
+      content.innerHTML = `<div class="alert alert-danger mb-0">${escapeHtml(err.message)}</div>`;
+    }
+  }
+
+  function renderCurrent() {
+    const map = {
+      users: renderUsers,
+      products: renderProducts,
+      orders: renderOrders,
+      messages: renderMessages
+    };
+    document.getElementById('adminContent').innerHTML = map[currentTab]();
+  }
+
+  function renderUsers() {
+    if (state.users.length === 0) return empty('暂无用户');
+    return `
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead><tr><th>ID</th><th>用户名</th><th>昵称</th><th>邮箱</th><th>手机号</th><th>校区</th><th>注册时间</th></tr></thead>
+          <tbody>${state.users.map(u => `
+            <tr>
+              <td>${u.id}</td>
+              <td>${escapeHtml(u.username || '-')} ${u.username === 'admin' ? '<span class="badge text-bg-primary">管理员</span>' : ''}</td>
+              <td>${escapeHtml(u.nickname || '-')}</td>
+              <td>${escapeHtml(u.email || '-')}</td>
+              <td>${escapeHtml(u.phone || '-')}</td>
+              <td>${escapeHtml(u.campus || '-')}</td>
+              <td>${formatDate(u.createdAt)}</td>
+            </tr>`).join('')}</tbody>
+        </table>
+      </div>`;
+  }
+
+  function renderProducts() {
+    if (state.products.length === 0) return empty('暂无商品');
+    return `
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead><tr><th>商品</th><th>分类</th><th>价格</th><th>卖家</th><th>状态</th><th>发布时间</th><th class="text-end">操作</th></tr></thead>
+          <tbody>${state.products.map(p => `
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <img src="${productImageUrl(p.imageUrl)}" alt="${escapeHtml(p.title || '')}" style="width:54px;height:42px;object-fit:cover;border-radius:8px;"/>
+                  <a href="product-detail.html?id=${p.id}" class="fw-semibold text-decoration-none">${escapeHtml(p.title || '-')}</a>
+                </div>
+              </td>
+              <td>${escapeHtml(p.category || '-')}</td>
+              <td class="text-danger fw-bold">¥${p.price}</td>
+              <td>${escapeHtml(p.sellerName || ('用户 #' + p.sellerId))}</td>
+              <td>${statusLabel(p.status)}</td>
+              <td>${formatDate(p.createdAt)}</td>
+              <td class="text-end">
+                ${p.status === 'ON_SALE' ? `<button class="btn btn-outline-danger btn-sm" onclick="forceOffline(${p.id})"><i class="bi bi-eye-slash"></i> 强制下架</button>` : '<span class="text-muted">不可下架</span>'}
+              </td>
+            </tr>`).join('')}</tbody>
+        </table>
+      </div>`;
+  }
+
+  function renderOrders() {
+    if (state.orders.length === 0) return empty('暂无订单');
+    return `
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead><tr><th>订单号</th><th>商品</th><th>买家</th><th>卖家</th><th>金额</th><th>状态</th><th>创建时间</th><th>支付时间</th></tr></thead>
+          <tbody>${state.orders.map(o => `
+            <tr>
+              <td><span class="small text-muted">${escapeHtml(o.orderNo || '-')}</span></td>
+              <td><a href="product-detail.html?id=${o.productId}" class="text-decoration-none">${escapeHtml(o.productTitle || ('商品 #' + o.productId))}</a></td>
+              <td>${escapeHtml(o.buyerName || ('用户 #' + o.buyerId))}</td>
+              <td>${escapeHtml(o.sellerName || ('用户 #' + o.sellerId))}</td>
+              <td class="text-danger fw-bold">¥${o.price}</td>
+              <td>${statusLabel(o.status)}</td>
+              <td>${formatDate(o.createdAt)}</td>
+              <td>${formatDate(o.paidAt)}</td>
+            </tr>`).join('')}</tbody>
+        </table>
+      </div>`;
+  }
+
+  function renderMessages() {
+    if (state.messages.length === 0) return empty('暂无留言');
+    return `
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead><tr><th>商品</th><th>留言用户</th><th>留言内容</th><th>时间</th><th class="text-end">操作</th></tr></thead>
+          <tbody>${state.messages.map(m => `
+            <tr>
+              <td><a href="product-detail.html?id=${m.productId}" class="text-decoration-none">${escapeHtml(m.productTitle || ('商品 #' + m.productId))}</a></td>
+              <td>${escapeHtml(m.userName || ('用户 #' + m.userId))}</td>
+              <td><div class="message-content">${escapeHtml(m.content || '')}</div></td>
+              <td>${formatDate(m.createdAt)}</td>
+              <td class="text-end">
+                <button class="btn btn-outline-danger btn-sm" onclick="deleteMessage(${m.id})"><i class="bi bi-trash"></i> 删除</button>
+              </td>
+            </tr>`).join('')}</tbody>
+        </table>
+      </div>`;
+  }
+
+  async function forceOffline(id) {
+    if (!confirm('确认强制下架这个商品？')) return;
+    try {
+      await adminApi.offlineProduct(id);
+      showToast('商品已强制下架');
+      await loadAll('products');
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  }
+
+  async function deleteMessage(id) {
+    if (!confirm('确认删除这条违规留言？')) return;
+    try {
+      await adminApi.deleteMessage(id);
+      showToast('留言已删除');
+      await loadAll('messages');
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  }
+
+  function empty(text) {
+    return `<div class="text-center py-5"><i class="bi bi-inbox display-1 text-muted"></i><p class="text-muted mt-3">${text}</p></div>`;
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  loadAll();
+</script>
+</body>
+</html>

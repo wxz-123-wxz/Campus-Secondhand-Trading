@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>校园二手交易平台</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+<style>
+  body{background:#f7fbff;}
+  .navbar{box-shadow:0 2px 8px rgba(0,0,0,.08);background:rgba(255,255,255,.9)!important;backdrop-filter:blur(12px);}
+  .hero{
+    position:relative;
+    color:#fff;
+    min-height:380px;
+    display:flex;
+    align-items:center;
+    overflow:hidden;
+    padding:0;
+    background:
+      linear-gradient(90deg,rgba(5,18,34,.54),rgba(5,38,55,.22),rgba(5,18,34,.44)),
+      url("assets/hero-campus-secondhand-market-v3.jpg") center 45%/cover no-repeat;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at 50% 38%,rgba(255,255,255,.16),transparent 36%);
+    pointer-events:none;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    inset:auto 0 0;
+    height:96px;
+    background:linear-gradient(to bottom,rgba(247,251,255,0),#f7fbff);
+    pointer-events:none;
+  }
+  .hero .container{position:relative;z-index:1;}
+  .search-section{position:relative;z-index:2;margin-top:-36px;}
+  .search-section .input-group{
+    max-width:560px!important;
+    padding:8px;
+    border-radius:18px;
+    background:rgba(255,255,255,.86);
+    border:1px solid rgba(203,213,225,.9);
+    box-shadow:0 18px 44px rgba(15,23,42,.14);
+    backdrop-filter:blur(16px);
+  }
+  .search-section .form-control{border:none;border-radius:12px!important;min-height:46px;background:rgba(255,255,255,.95);}
+  .search-section .btn{border:none;border-radius:12px!important;min-width:54px;color:#fff;background:#0ea5e9;}
+  .product-card{border:none;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.08);transition:transform .2s,box-shadow .2s;overflow:hidden;}
+  .product-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.15);}
+  .product-img{height:200px;object-fit:cover;background:#f8f9fa;}
+  .price{font-size:1.5rem;font-weight:700;color:#e53935;}
+</style>
+<link rel="stylesheet" href="assets/app.css"/>
+</head>
+<body class="home-page">
+<!-- 导航栏 -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="index.html">
+      <i class="bi bi-shop-window text-primary"></i> 校园二手
+    </a>
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link active" href="index.html"><i class="bi bi-house"></i> 首页</a></li>
+        <li class="nav-item" id="navMyProducts" style="display:none;">
+          <a class="nav-link" href="my-products.html"><i class="bi bi-box-seam"></i> 我的商品</a>
+        </li>
+        <li class="nav-item" id="navMyOrders" style="display:none;">
+          <a class="nav-link" href="my-orders.html"><i class="bi bi-receipt"></i> 我的订单</a>
+        </li>
+        <li class="nav-item" id="navAdmin" style="display:none;">
+          <a class="nav-link" href="admin.html"><i class="bi bi-shield-lock"></i> 后台管理</a>
+        </li>
+        <li class="nav-item" id="navLogin">
+          <a class="nav-link" href="login.html"><i class="bi bi-box-arrow-in-right"></i> 登录</a>
+        </li>
+        <li class="nav-item" id="navUser" style="display:none;">
+          <div class="dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle"></i> <span id="userName"></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#" id="btnLogout"><i class="bi bi-box-arrow-right"></i> 退出</a></li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="container hero-content">
+    <section class="hero-copy">
+      <span class="hero-kicker">校园闲置流转中心</span>
+      <h1>让闲置好物在校园里重新发光</h1>
+      <p>教材、数码、生活用品和运动器材都能在这里快速发布、搜索、收藏和下单。</p>
+      <form id="searchForm" class="hero-search">
+        <div class="input-group">
+          <input id="keyword" type="text" class="form-control" placeholder="搜索商品..."/>
+          <button type="submit" class="btn" aria-label="搜索商品"><i class="bi bi-search"></i></button>
+        </div>
+      </form>
+    </section>
+    <section class="hero-visual-card" aria-label="校园二手市场主题图">
+      <img src="assets/hero-campus-secondhand-market-v3.jpg" alt="校园二手市场主题图"/>
+    </section>
+  </div>
+</div>
+
+<!-- 商品列表 -->
+<div class="container pt-5 pb-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3><i class="bi bi-grid-3x3-gap"></i> 在售商品</h3>
+    <a href="product-form.html" class="btn btn-primary" id="btnPublish" style="display:none;">
+      <i class="bi bi-plus-circle"></i> 发布商品
+    </a>
+  </div>
+  <div id="productList" class="row g-4">
+    <div class="col-12 text-center">
+      <div class="spinner-border text-primary"></div>
+      <p class="mt-2 text-muted">加载中...</p>
+    </div>
+  </div>
+  <nav id="pagination" class="mt-4"></nav>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/api.js?v=20260708-admin1"></script>
+<script>
+  // 更新导航栏
+  if (auth.isLoggedIn()) {
+    const user = auth.getUser();
+    document.getElementById('navLogin').style.display = 'none';
+    document.getElementById('navUser').style.display = 'block';
+    document.getElementById('navMyProducts').style.display = 'block';
+    document.getElementById('navMyOrders').style.display = 'block';
+    if (auth.isAdmin()) document.getElementById('navAdmin').style.display = 'block';
+    document.getElementById('btnPublish').style.display = 'inline-block';
+    document.getElementById('userName').textContent = user.nickname || user.username;
+  }
+  document.getElementById('btnLogout')?.addEventListener('click', e => {
+    e.preventDefault();
+    userApi.logout();
+  });
+
+  // 加载商品列表
+  let currentPage = 1;
+  let currentKeyword = '';
+
+  async function loadProducts(keyword = '', page = 1) {
+    currentKeyword = keyword;
+    currentPage = page;
+    const container = document.getElementById('productList');
+    container.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-primary"></div></div>';
+
+    try {
+      const data = await productApi.list(keyword, page, 12);
+      if (!data.list || data.list.length === 0) {
+        container.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <p class="mt-3 text-muted">暂无商品</p>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = data.list.map(p => `
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="product-detail.html?id=${p.id}" class="text-decoration-none text-dark">
+            <div class="product-card">
+              <img src="${productImageUrl(p.imageUrl)}"
+                   class="card-img-top product-img" alt="${p.title}" loading="lazy"/>
+              <div class="card-body">
+                <h6 class="card-title text-truncate">${p.title}</h6>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="price">¥${p.price}</span>
+                  ${statusLabel(p.status)}
+                </div>
+                <small class="text-muted">${p.sellerName || '匿名'}</small>
+              </div>
+            </div>
+          </a>
+        </div>
+      `).join('');
+
+      // 分页
+      if (data.totalPages > 1) {
+        const pg = document.getElementById('pagination');
+        pg.innerHTML = `<ul class="pagination justify-content-center">${
+          Array.from({length: data.totalPages}, (_, i) => i + 1).map(p => `
+            <li class="page-item ${p === page ? 'active' : ''}">
+              <a class="page-link" href="#" data-page="${p}">${p}</a>
+            </li>
+          `).join('')
+        }</ul>`;
+        pg.querySelectorAll('a').forEach(a => a.addEventListener('click', e => {
+          e.preventDefault();
+          loadProducts(currentKeyword, +e.target.dataset.page);
+          window.scrollTo(0, 0);
+        }));
+      }
+    } catch(err) {
+      container.innerHTML = `<div class="col-12 text-center text-danger">${err.message}</div>`;
+    }
+  }
+
+  // 搜索
+  document.getElementById('searchForm').addEventListener('submit', e => {
+    e.preventDefault();
+    loadProducts(document.getElementById('keyword').value.trim(), 1);
+  });
+
+  loadProducts();
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: campus-trade-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_HOST:localhost}:${NACOS_PORT:8848}
+        ip: 127.0.0.1
+    gateway:
+      discovery:
+        locator:
+          enabled: true          # 自动从 Nacos 注册表生成路由（用于调试）
+          lower-case-service-id: true
+      # 全局 CORS（允许前端静态页面跨域调用网关）
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedMethods: "GET,POST,PUT,DELETE,OPTIONS"
+            allowedHeaders: "*"
+            allowCredentials: true
+            maxAge: 3600
+      routes:
+        # 用户服务
+        - id: user-service
+          uri: lb://campus-trade-user
+          predicates:
+            - Path=/api/auth/**, /api/users/**
+        # 商品服务
+        - id: product-service
+          uri: lb://campus-trade-product
+          predicates:
+            - Path=/api/products/**
+        # 订单服务
+        - id: order-service
+          uri: lb://campus-trade-order
+          predicates:
+            - Path=/api/orders/**
+        # 支付服务
+        - id: payment-service
+          uri: lb://campus-trade-payment
+          predicates:
+            - Path=/api/payment/**
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      lettuce:
+        pool:
+          max-active: 8
+
+# JWT 密钥（各服务保持一致）
+jwt:
+  secret: ${JWT_SECRET:campus-trade-secret-key-at-least-256bits-long!}

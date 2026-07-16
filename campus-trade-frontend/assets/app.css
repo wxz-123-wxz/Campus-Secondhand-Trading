@@ -1,0 +1,414 @@
+:root {
+  --ui-bg: #f5f9fc;
+  --ui-surface: rgba(255, 255, 255, 0.92);
+  --ui-surface-strong: #ffffff;
+  --ui-border: rgba(148, 163, 184, 0.26);
+  --ui-text: #102033;
+  --ui-muted: #64748b;
+  --ui-primary: #0ea5e9;
+  --ui-primary-dark: #2563eb;
+  --ui-teal: #14b8a6;
+  --ui-danger: #ef4444;
+  --ui-shadow: 0 18px 46px rgba(15, 23, 42, 0.12);
+  --ui-shadow-soft: 0 10px 26px rgba(15, 23, 42, 0.08);
+}
+
+* {
+  letter-spacing: 0;
+}
+
+body {
+  color: var(--ui-text);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(14, 165, 233, 0.12), transparent 30%),
+    linear-gradient(180deg, #f7fbff 0%, #eef6fb 100%);
+}
+
+a {
+  color: #0f75b8;
+}
+
+.navbar {
+  border-bottom: 1px solid rgba(226, 232, 240, 0.86);
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(14px);
+}
+
+.navbar-brand {
+  color: #0f5f87 !important;
+}
+
+.nav-link {
+  border-radius: 999px;
+  padding-inline: 12px !important;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background: rgba(14, 165, 233, 0.1);
+  color: #0369a1 !important;
+}
+
+.btn {
+  min-height: 38px;
+  border-radius: 10px;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  border: none;
+  background: linear-gradient(135deg, var(--ui-primary), var(--ui-primary-dark));
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.2);
+}
+
+.btn-danger {
+  border: none;
+  background: linear-gradient(135deg, #fb7185, var(--ui-danger));
+}
+
+.btn-outline-secondary,
+.btn-outline-primary,
+.btn-outline-danger {
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.card,
+.order-card,
+.modal-content {
+  border: 1px solid var(--ui-border) !important;
+  border-radius: 16px !important;
+  background: var(--ui-surface) !important;
+  box-shadow: var(--ui-shadow-soft) !important;
+}
+
+.form-control,
+.form-select,
+.input-group-text,
+textarea {
+  min-height: 44px;
+  border-radius: 10px !important;
+  border-color: rgba(148, 163, 184, 0.34);
+}
+
+.form-control:focus,
+.form-select:focus,
+textarea:focus {
+  border-color: rgba(14, 165, 233, 0.82);
+  box-shadow: 0 0 0 0.2rem rgba(14, 165, 233, 0.14);
+}
+
+.form-label {
+  font-weight: 600;
+  color: #334155;
+}
+
+.badge {
+  border-radius: 999px;
+  padding: 0.42rem 0.62rem;
+}
+
+.home-page {
+  background: #f7fbff;
+}
+
+.home-page .hero {
+  min-height: clamp(520px, 68vh, 680px);
+  padding: 48px 0;
+  background:
+    radial-gradient(circle at 72% 34%, rgba(20, 184, 166, 0.18), transparent 34%),
+    linear-gradient(135deg, #e8f7f4 0%, #edf7ff 52%, #f9fbff 100%);
+}
+
+.home-page .hero::before {
+  background:
+    linear-gradient(rgba(14, 165, 233, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14, 165, 233, 0.06) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+.home-page .hero::after {
+  display: none;
+}
+
+.home-page .hero-content {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.9fr) minmax(360px, 1.1fr);
+  gap: clamp(28px, 5vw, 68px);
+  align-items: center;
+}
+
+.home-page .hero-copy {
+  position: relative;
+  z-index: 1;
+  padding: clamp(22px, 4vw, 40px);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.58);
+  box-shadow: var(--ui-shadow-soft);
+  backdrop-filter: blur(18px);
+}
+
+.home-page .hero-kicker {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  color: #0369a1;
+  background: rgba(224, 242, 254, 0.88);
+  border: 1px solid rgba(14, 165, 233, 0.18);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.home-page .hero-copy h1 {
+  margin: 18px 0 12px;
+  color: #0f2f48;
+  font-size: clamp(34px, 4.5vw, 56px);
+  line-height: 1.08;
+  font-weight: 800;
+}
+
+.home-page .hero-copy p {
+  max-width: 34em;
+  margin: 0;
+  color: #475569;
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.home-page .hero-search {
+  margin-top: 26px;
+}
+
+.home-page .hero-search .input-group {
+  width: 100%;
+  padding: 8px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.12);
+}
+
+.home-page .hero-search .form-control {
+  min-height: 48px;
+  border: none;
+  background: transparent;
+}
+
+.home-page .hero-search .btn {
+  min-width: 54px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--ui-primary), var(--ui-primary-dark));
+}
+
+.home-page .hero-visual-card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 440px;
+  padding: clamp(14px, 2vw, 22px);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  box-shadow: 0 28px 70px rgba(15, 23, 42, 0.18);
+  backdrop-filter: blur(16px);
+}
+
+.home-page .hero-visual-card img {
+  width: 100%;
+  max-height: 560px;
+  object-fit: contain;
+  display: block;
+  border-radius: 22px;
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.18);
+}
+
+.home-page .search-section {
+  display: none;
+}
+
+.home-page .search-section .input-group {
+  width: min(620px, calc(100vw - 32px));
+  max-width: none !important;
+  background: rgba(255, 255, 255, 0.78);
+  border-color: rgba(255, 255, 255, 0.72);
+  box-shadow: var(--ui-shadow);
+}
+
+.home-page .product-card {
+  height: 100%;
+  background: var(--ui-surface-strong);
+  border: 1px solid rgba(226, 232, 240, 0.88);
+  border-radius: 16px;
+  box-shadow: var(--ui-shadow-soft);
+}
+
+.home-page .product-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 22px 50px rgba(15, 23, 42, 0.16);
+}
+
+.home-page .product-img {
+  height: 210px;
+  border-radius: 16px 16px 0 0;
+}
+
+.price {
+  color: #e11d48 !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.auth-page {
+  min-height: 100dvh;
+  background:
+    linear-gradient(120deg, rgba(2, 10, 25, 0.42), rgba(8, 51, 72, 0.12)),
+    url("hero-campus-secondhand-market-v3.jpg") center / cover fixed no-repeat !important;
+}
+
+.auth-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
+}
+
+.auth-page .container {
+  position: relative;
+  z-index: 1;
+}
+
+.auth-page .card {
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34) !important;
+  backdrop-filter: blur(22px);
+}
+
+.auth-page .brand,
+.auth-page .form-label,
+.auth-page .text-muted {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.auth-page .form-control,
+.auth-page .input-group-text {
+  background: rgba(255, 255, 255, 0.76);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.auth-page hr {
+  border-color: rgba(255, 255, 255, 0.34);
+  opacity: 1;
+}
+
+.auth-page a {
+  color: #e0f2fe;
+}
+
+.app-page {
+  min-height: 100dvh;
+  background:
+    linear-gradient(rgba(247, 251, 255, 0.88), rgba(247, 251, 255, 0.96)),
+    url("hero-campus-secondhand-market-v3.jpg") center top / cover fixed no-repeat;
+}
+
+.app-page > .container {
+  max-width: 1120px;
+}
+
+.app-page h3 {
+  font-weight: 700;
+  color: #0f3554;
+}
+
+.app-page .nav-tabs {
+  gap: 8px;
+  border-bottom: 0;
+}
+
+.app-page .nav-tabs .nav-link {
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: #475569;
+}
+
+.app-page .nav-tabs .nav-link.active {
+  color: #0369a1;
+  background: rgba(224, 242, 254, 0.92);
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+.app-page .product-img {
+  box-shadow: inset 0 0 0 1px rgba(226, 232, 240, 0.8);
+}
+
+.app-page .order-card {
+  border-left: 4px solid var(--ui-primary) !important;
+}
+
+.detail-hero-image {
+  box-shadow: var(--ui-shadow);
+}
+
+.modal-backdrop.show {
+  opacity: 0.52;
+}
+
+@media (max-width: 768px) {
+  .home-page .hero {
+    min-height: auto;
+    padding: 28px 0 36px;
+  }
+
+  .home-page .hero-content {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .home-page .hero-visual-card {
+    min-height: auto;
+  }
+
+  .home-page .hero-copy h1 {
+    font-size: 32px;
+  }
+
+  .app-page > .container,
+  .container {
+    width: min(100% - 24px, 1120px);
+  }
+
+  .app-page .d-flex.justify-content-between.align-items-center {
+    align-items: flex-start !important;
+    gap: 12px;
+  }
+
+  .app-page .card.flex-row {
+    align-items: flex-start !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
